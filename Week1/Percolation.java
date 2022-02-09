@@ -45,6 +45,10 @@ public class Percolation {
     public void open(int row, int col) {
         isValid(row, col);
 
+        if (isOpen(row, col)) {
+            return;
+        }
+
         if (!grid[row - 1][col - 1]) {
             openSites++;
             grid[row - 1][col - 1] = true;
@@ -100,15 +104,7 @@ public class Percolation {
 
     // returns the number of open sites
     public int numberOfOpenSites() {
-        int count = 0;
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                 if (isOpen(i, j)) {
-                    count++;
-                 }
-            }
-        }
-        return count;
+        return openSites;
     }
 
     // does the system percolate?

@@ -6,21 +6,20 @@ public class PercolationStats {
     private static final double CONFIDENCE_95 = 1.96;
     private final int trials;
     private final double[] means;
+    private Percolation p;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
         this.trials = trials;
         this.means = new double[trials];
+        Percolation p;
         for (int i = 0; i < trials; ++i) {
-            Percolation p = new Percolation(n);
+            p = new Percolation(n);
             while (!p.percolates()) {
-                if (StdRandom.bernoulli(StdRandom.uniform())) {
-                    int randomRow = StdRandom.uniform(1, n + 1);
-                    int randomCol = StdRandom.uniform(1, n + 1);
-                    if (!p.isOpen(randomRow, randomCol)) {
-                        p.open(randomRow, randomCol);
-                    }
-                    // StdOut.println(random_row + "," + random_col);
+                int randomRow = StdRandom.uniform(1, n + 1);
+                int randomCol = StdRandom.uniform(1, n + 1);
+                if (!p.isOpen(randomRow, randomCol)) {
+                    p.open(randomRow, randomCol);
                 }
             }
             // StdOut.println("Number of open sites: " + p.numberOfOpenSites());
@@ -58,6 +57,10 @@ public class PercolationStats {
        }
        int n = Integer.parseInt(args[0]);
        int trials = Integer.parseInt(args[1]);
+       
+       if (n <= 0 || trials <= 0) {
+           throw new IllegalArgumentException();
+       }
        PercolationStats ps = new PercolationStats(n, trials);
        double mean = ps.mean();
        double std  = ps.stddev();
