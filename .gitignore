@@ -78,5 +78,5 @@ Temporary Items
 .ionide
 
 # Support for Project snippet scope
-
+*.jar
 # End of https://www.toptal.com/developers/gitignore/api/java,visualstudiocode,macos
