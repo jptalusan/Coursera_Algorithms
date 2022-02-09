@@ -12,7 +12,6 @@ public class PercolationStats {
     public PercolationStats(int n, int trials) {
         this.trials = trials;
         this.means = new double[trials];
-        Percolation p;
         for (int i = 0; i < trials; ++i) {
             p = new Percolation(n);
             while (!p.percolates()) {

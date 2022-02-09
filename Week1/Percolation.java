@@ -4,7 +4,7 @@ import edu.princeton.cs.algs4.StdOut;
 public class Percolation {
     private boolean[][] grid;
     private final WeightedQuickUnionUF uf;
-    private final int srcNode = 0;
+    private static final int srcNode = 0;
     private final int dstNode;
     private final int n;
     private int openSites = 0;
