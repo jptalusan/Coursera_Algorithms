@@ -1,11 +1,11 @@
 import java.util.Iterator;
-import edu.princeton.cs.algs4.StdIn;
+import java.util.NoSuchElementException;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Deque<Item> implements Iterable<Item> {
-    private Node first = null;
-    private Node last  = null;
-    private int size   = 0;
+    private Node first;
+    private Node last;
+    private int size;
 
     private class Node {
         Item item;
@@ -15,12 +15,14 @@ public class Deque<Item> implements Iterable<Item> {
 
     // construct an empty deque
     public Deque() {
-
+        size = 0;
+        first = null;
+        last = null;
     }
 
     // is the deque empty?
     public boolean isEmpty() {
-        return first == null;
+        return size == 0;
     }
 
     // return the number of items on the deque
@@ -28,9 +30,13 @@ public class Deque<Item> implements Iterable<Item> {
         return size;
     }
 
+    private void validateArgument(Item item) {
+        if (item == null) throw new IllegalArgumentException();
+    }
+
     // add the item to the front
     public void addFirst(Item item) {
-        StdOut.printf("addFirst: %s%n", item);
+        validateArgument(item);
         if (size == 0) {
             Node oldfirst = first;
             Node oldLast = last;
@@ -46,18 +52,12 @@ public class Deque<Item> implements Iterable<Item> {
             first.next = oldfirst;
             oldfirst.prev = first;
         }
-
-        Item p = null;
-        Item n = null;
-        if (first.prev != null) p = first.prev.item;
-        if (first.next != null) n = first.next.item;
-        StdOut.printf("addFirst Prev: %s, Next: %s%n", p, n);
         ++size;
     }
 
     // add the item to the back
     public void addLast(Item item) {
-        StdOut.printf("addLast: %s%n", item);
+        validateArgument(item);
         if (size == 0) {
             Node oldfirst = first;
             Node oldLast = last;
@@ -76,18 +76,16 @@ public class Deque<Item> implements Iterable<Item> {
                 last.prev = oldLast;
             }
         }
-
-        Item p = null;
-        Item n = null;
-        if (last.prev != null) p = last.prev.item;
-        if (last.next != null) n = last.next.item;
-        StdOut.printf("addLast Prev: %s, Next: %s%n", p, n);
         ++size;
+    }
+
+    private void verifySize() {
+        if (isEmpty()) throw new NoSuchElementException();
     }
 
     // remove and return the item from the front
     public Item removeFirst() {
-        StdOut.printf("removeFirst()%n");
+        verifySize();
         --size;
         Item item = first.item;
         first = first.next;
@@ -96,12 +94,11 @@ public class Deque<Item> implements Iterable<Item> {
 
     // remove and return the item from the back
     public Item removeLast() {
-        StdOut.printf("removeLast()%n");
+        verifySize();
         --size;
         Item item = last.item;
         last = last.prev;
         last.next = null;
-        StdOut.printf("Last.prev: %s%n", last.item);
         return item;
     }
 
@@ -117,9 +114,14 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         public Item next() {
+            if (size <= 0) throw new NoSuchElementException();
             Item item = current.item;
             current = current.next;
             return item;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -140,6 +142,8 @@ public class Deque<Item> implements Iterable<Item> {
         for (String s : deck)
             StdOut.println(s);
 
+        StdOut.printf("Is Empty?: %b%n", deck.isEmpty());
+
         String first = deck.removeFirst();
         String last  = deck.removeLast();
         StdOut.printf("first: %s%n", first);
@@ -150,5 +154,52 @@ public class Deque<Item> implements Iterable<Item> {
         for (String s : deck)
             StdOut.println(s);
 
+        // Verify null inserts
+        try {
+            StdOut.print("Try addFirst(null):");
+            deck.addFirst(null);
+        } catch (IllegalArgumentException e) {
+            StdOut.println(e);
+        }
+        try {
+            StdOut.print("Try addLast(null):");
+            deck.addLast(null);
+        } catch (IllegalArgumentException e) {
+            StdOut.println(e);
+        }
+
+        // Verify empty removes
+        deck = new Deque<>();
+        StdOut.printf("Is Empty?: %b%n", deck.isEmpty());
+
+        try {
+            StdOut.print("Try removeFirst() an empty deck:");
+            deck.removeFirst();
+        } catch (NoSuchElementException e) {
+            StdOut.println(e);
+        }
+        try {
+            StdOut.print("Try removeLast() an empty deck:");
+            deck.removeLast();
+        } catch (NoSuchElementException e) {
+            StdOut.println(e);
+        }
+
+        // test next when no items to return
+        Iterator<String> i = deck.iterator();
+        try {
+            StdOut.print("Try next() an empty deck:");
+            i.next();
+        } catch (NoSuchElementException e) {
+            StdOut.println(e);
+        }
+
+        // try iterator.remove()
+        try {
+            StdOut.print("Try iterator.remove():");
+            i.remove();
+        } catch (UnsupportedOperationException e) {
+            StdOut.println(e);
+        }
     }
 }
